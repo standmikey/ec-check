@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アパレルECマーケティング診断 | STAND MIKEY</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 20px 80px;
+    }
+
+    .wrap { max-width: 600px; width: 100%; }
+
+    /* Progress */
+    .progress-track {
+      height: 2px;
+      background: #222;
+      border-radius: 1px;
+      margin-bottom: 52px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #c9b07c;
+      border-radius: 1px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* Screen transitions */
+    .screen { display: none; }
+    .screen.active {
+      display: block;
+      animation: fadeUp 0.35s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome */
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c9b07c;
+      margin-bottom: 20px;
+    }
+    .welcome-title {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .welcome-desc {
+      font-size: 15px;
+      color: #888;
+      line-height: 1.8;
+      margin-bottom: 44px;
+    }
+    .meta-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 44px;
+    }
+    .meta-item { font-size: 13px; color: #666; }
+    .meta-item span { color: #c9b07c; margin-right: 6px; }
+
+    /* Buttons */
+    .btn-primary {
+      background: #c9b07c;
+      color: #0f0f0f;
+      border: none;
+      border-radius: 6px;
+      padding: 16px 40px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:disabled {
+      background: #272727;
+      color: #555;
+      cursor: not-allowed;
+    }
+    .btn-full { width: 100%; padding: 16px; }
+
+    /* Question */
+    .q-counter {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: #555;
+      margin-bottom: 14px;
+    }
+    .q-text {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 28px;
+    }
+    .multi-hint { font-size: 12px; color: #555; margin-bottom: 14px; }
+
+    /* Options */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt {
+      background: #161616;
+      border: 1px solid #282828;
+      border-radius: 8px;
+      padding: 15px 18px;
+      font-size: 15px;
+      color: #d0d0d0;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      line-height: 1.4;
+    }
+    .opt:hover { border-color: #c9b07c; background: #1a1a14; }
+    .opt.selected {
+      border-color: #c9b07c;
+      background: #1c1a10;
+      color: #c9b07c;
+    }
+    .btn-next { margin-top: 28px; }
+
+    /* Result */
+    .result-label { font-size: 11px; letter-spacing: 0.12em; color: #c9b07c; margin-bottom: 10px; }
+    .result-badge {
+      display: inline-block;
+      background: #1c1a10;
+      border: 1px solid #c9b07c;
+      color: #c9b07c;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 5px 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .result-title {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 28px;
+    }
+    .result-divider {
+      width: 32px;
+      height: 2px;
+      background: #c9b07c;
+      margin-bottom: 28px;
+    }
+    .result-body {
+      font-size: 15px;
+      color: #bbb;
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+    .result-body strong { color: #f0f0f0; }
+    .result-list {
+      list-style: none;
+      margin: 16px 0;
+    }
+    .result-list li {
+      font-size: 15px;
+      color: #bbb;
+      line-height: 1.7;
+      padding: 8px 0 8px 20px;
+      position: relative;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .result-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: #c9b07c;
+    }
+    .result-cta-area {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 28px 24px;
+      margin-top: 36px;
+    }
+    .result-cta-text {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .btn-cta {
+      display: block;
+      background: #c9b07c;
+      color: #0f0f0f;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: opacity 0.15s;
+    }
+    .btn-cta:hover { opacity: 0.88; }
+    .sub-note {
+      font-size: 12px;
+      color: #444;
+      text-align: center;
+      margin-top: 14px;
+    }
+    .retry-link {
+      display: block;
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      margin-top: 28px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .retry-link:hover { color: #888; }
+
+    @media (max-width: 480px) {
+      body { padding: 32px 16px 60px; }
+      .welcome-title { font-size: 21px; }
+      .q-text { font-size: 17px; }
+      .result-title { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- Welcome -->
+  <div class="screen active" id="s-welcome">
+    <div class="label">STAND MIKEY — EC診断</div>
+    <h1 class="welcome-title">あなたのアパレルECブランドの<br>課題を5問で診断します</h1>
+    <p class="welcome-desc">月商規模や集客状況を答えるだけで、今もっとも優先すべき課題タイプがわかります。</p>
+    <div class="meta-row">
+      <div class="meta-item"><span>●</span>所要時間 約2分</div>
+      <div class="meta-item"><span>●</span>全6問</div>
+      <div class="meta-item"><span>●</span>無料</div>
+    </div>
+    <button class="btn-primary" onclick="go('q1')">診断をはじめる →</button>
+  </div>
+
+  <!-- Q1 -->
+  <div class="screen" id="s-q1">
+    <div class="q-counter">Q1 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">ブランドの月商規模を教えてください</div>
+    <div class="options" id="opts-q1">
+      <button class="opt" onclick="pick('q1',0,this)">〜50万円</button>
+      <button class="opt" onclick="pick('q1',1,this)">50〜200万円</button>
+      <button class="opt" onclick="pick('q1',2,this)">200〜500万円</button>
+      <button class="opt" onclick="pick('q1',3,this)">500万円〜</button>
+      <button class="opt" onclick="pick('q1',4,this)">まだ販売していない / 立ち上げ前</button>
+    </div>
+    <button class="btn-primary btn-full btn-next" id="nxt-q1" onclick="go('q2')" disabled>次へ</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="screen" id="s-q2">
+    <div class="q-counter">Q2 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">今メインで使っている販売・集客チャネルを教えてください</div>
+    <div class="multi-hint">複数選択可</div>
+    <div class="options" id="opts-q2">
+      <button class="opt" onclick="toggle('q2',0,this)">Instagram・Threads</button>
+      <button class="opt" onclick="toggle('q2',1,this)">Meta広告（Facebook・Instagram広告）</button>
+      <button class="opt" onclick="toggle('q2',2,this)">自社EC（Shopifyなど）</button>
+      <button class="opt" onclick="toggle('q2',3,this)">ZOZOTOWN・楽天などモール</button>
+      <button class="opt" onclick="toggle('q2',4,this)">LINE公式アカウント</button>
+      <button class="opt" onclick="toggle('q2',5,this)">まだ本格的には動けていない</button>
+    </div>
+    <button class="btn-primary btn-full btn-next" id="nxt-q2" onclick="go('q3')" disabled>次へ</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="screen" id="s-q3">
+    <div class="q-counter">Q3 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">SNSのフォロワーはいるのに、ECへの流入や購入が少ないと感じますか？</div>
+    <div class="options">
+      <button class="opt" onclick="pick('q3',1,this); delay(() => go('q4'))">はい、そう感じる</button>
+      <button class="opt" onclick="pick('q3',0,this); delay(() => go('q4'))">いいえ、流入はある</button>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="screen" id="s-q4">
+    <div class="q-counter">Q4 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">ECに訪問者は来ているが、なかなか購入につながらないと感じますか？</div>
+    <div class="options">
+      <button class="opt" onclick="pick('q4',1,this); delay(() => go('q5'))">はい、離脱が多い</button>
+      <button class="opt" onclick="pick('q4',0,this); delay(() => go('q5'))">いいえ、一定は買ってもらえている</button>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="screen" id="s-q5">
+    <div class="q-counter">Q5 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">2回以上購入してくれたリピーターは、全体の購入者のうち何%くらいですか？</div>
+    <div class="options" id="opts-q5">
+      <button class="opt" onclick="pick('q5',0,this)">10%未満（リピートがほとんどいない）</button>
+      <button class="opt" onclick="pick('q5',1,this)">10〜30%</button>
+      <button class="opt" onclick="pick('q5',2,this)">30%以上</button>
+      <button class="opt" onclick="pick('q5',3,this)">把握できていない</button>
+    </div>
+    <button class="btn-primary btn-full btn-next" id="nxt-q5" onclick="go('q6')" disabled>次へ</button>
+  </div>
+
+  <!-- Q6 -->
+  <div class="screen" id="s-q6">
+    <div class="q-counter">Q6 &nbsp;/&nbsp; 6</div>
+    <div class="q-text">今、一番解決したいことを1つ選んでください</div>
+    <div class="options">
+      <button class="opt" onclick="finish('A',this)">新規顧客を増やしたい（SNS・広告・集客）</button>
+      <button class="opt" onclick="finish('B',this)">ECに来た人に買ってもらいたい（購入率・商品ページ）</button>
+      <button class="opt" onclick="finish('C',this)">リピーターを増やして安定収益にしたい（CRM・LTV）</button>
+      <button class="opt" onclick="finish('D',this)">何から手をつければいいかわからない（全体整理）</button>
+    </div>
+  </div>
+
+  <!-- Result A: 集客設計型 -->
+  <div class="screen" id="s-result-A">
+    <div class="result-label">診断結果</div>
+    <div class="result-badge">集客設計型</div>
+    <h2 class="result-title">SNSとECの間の<br>「導線」が整っていない状態です</h2>
+    <div class="result-divider"></div>
+    <p class="result-body">フォロワーはいるのに購入が少ない場合、ほとんどのケースで原因は商品ではなく<strong>導線の設計</strong>にあります。</p>
+    <ul class="result-list">
+      <li>Instagramプロフィールリンクの設計（ECへ直結しているか）</li>
+      <li>ストーリーズ・リールからECへの自然な誘導があるか</li>
+      <li>ECトップページのメッセージがSNSの世界観と一致しているか</li>
+    </ul>
+    <p class="result-body">この3点を整えるだけで、広告費をかけずに流入と購入率が改善するケースが多いです。</p>
+    <div class="result-cta-area">
+      <p class="result-cta-text">自分のブランドの場合、どこから手をつければいいか一緒に整理しませんか。初回30分のヒアリングは無料です。</p>
+      <a class="btn-cta" href="INQUIRY_FORM_URL" target="_blank">無料相談に申し込む →</a>
+      <p class="sub-note">初回30分・無料 ／ オンライン（Zoom / Google Meet）</p>
+    </div>
+    <span class="retry-link" onclick="restart()">もう一度診断する</span>
+  </div>
+
+  <!-- Result B: 転換率改善型 -->
+  <div class="screen" id="s-result-B">
+    <div class="result-label">診断結果</div>
+    <div class="result-badge">転換率改善型</div>
+    <h2 class="result-title">訪問者はいるのに<br>「買われない」状態です</h2>
+    <div class="result-divider"></div>
+    <p class="result-body">集客自体はできているのに購入につながらない場合、ほぼ確実に<strong>商品ページかカート周辺</strong>に問題があります。</p>
+    <ul class="result-list">
+      <li>商品画像・説明文・サイズ感の伝え方が不十分</li>
+      <li>カゴ落ちメール（リマインダー）が未設定</li>
+      <li>購入フローのステップが多く離脱が起きている</li>
+    </ul>
+    <p class="result-body">Shopifyのアナリティクスを見れば、どのページで離脱しているか15分で特定できます。</p>
+    <div class="result-cta-area">
+      <p class="result-cta-text">どのページに問題があるか、一緒に確認しませんか。実際の数字を見ながらヒアリングします。初回30分無料です。</p>
+      <a class="btn-cta" href="INQUIRY_FORM_URL" target="_blank">無料相談に申し込む →</a>
+      <p class="sub-note">初回30分・無料 ／ オンライン（Zoom / Google Meet）</p>
+    </div>
+    <span class="retry-link" onclick="restart()">もう一度診断する</span>
+  </div>
+
+  <!-- Result C: LTV・リピート型 -->
+  <div class="screen" id="s-result-C">
+    <div class="result-label">診断結果</div>
+    <div class="result-badge">LTV・リピート型</div>
+    <h2 class="result-title">新規は取れているのに<br>「リピートしない」構造になっています</h2>
+    <div class="result-divider"></div>
+    <p class="result-body">この状態が続くと、毎月広告費をかけ続けないと売上が維持できない体質になります。最初に整えるべきは3つです。</p>
+    <ul class="result-list">
+      <li>購入後24時間以内のサンクスメール（自動送信）</li>
+      <li>2週間後・1ヶ月後のフォローメール設計</li>
+      <li>LINE公式への誘導と来店・再購入特典の設計</li>
+    </ul>
+    <p class="result-body">どれか1つでも自動化できれば、翌月から変化が出始めます。</p>
+    <div class="result-cta-area">
+      <p class="result-cta-text">自分のブランドに合ったCRM・リピート設計を一緒に考えませんか。初回30分のヒアリングは無料です。</p>
+      <a class="btn-cta" href="INQUIRY_FORM_URL" target="_blank">無料相談に申し込む →</a>
+      <p class="sub-note">初回30分・無料 ／ オンライン（Zoom / Google Meet）</p>
+    </div>
+    <span class="retry-link" onclick="restart()">もう一度診断する</span>
+  </div>
+
+  <!-- Result D: 基盤整備型 -->
+  <div class="screen" id="s-result-D">
+    <div class="result-label">診断結果</div>
+    <div class="result-badge">基盤整備型</div>
+    <h2 class="result-title">施策の優先順位が決まっていない<br>「分散」状態です</h2>
+    <div class="result-divider"></div>
+    <p class="result-body">この状態で広告を出しても、SNSに力を入れても、効果が感じにくくなります。まず整えるべきは<strong>「計測」と「優先順位の言語化」</strong>です。</p>
+    <ul class="result-list">
+      <li>どのチャネルから売上が来ているかを把握する</li>
+      <li>ブランドのボトルネックを1つに絞る</li>
+      <li>その1点だけに集中して動く</li>
+    </ul>
+    <p class="result-body">ここを整えると、次から打つ施策の効果が一気に見えやすくなります。</p>
+    <div class="result-cta-area">
+      <p class="result-cta-text">全体を整理して、どこから動くべきか一緒に考えませんか。初回30分のヒアリングは無料です。</p>
+      <a class="btn-cta" href="INQUIRY_FORM_URL" target="_blank">無料相談に申し込む →</a>
+      <p class="sub-note">初回30分・無料 ／ オンライン（Zoom / Google Meet）</p>
+    </div>
+    <span class="retry-link" onclick="restart()">もう一度診断する</span>
+  </div>
+</div>
+
+<script>
+  const ans = {}, multi = { q2: [] };
+  const steps = ['welcome','q1','q2','q3','q4','q5','q6'];
+  const prog  = { welcome:0, q1:10, q2:25, q3:42, q4:58, q5:75, q6:90 };
+
+  function setProgress(pct) {
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('s-' + id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function go(id) {
+    setProgress(prog[id] ?? 100);
+    show(id);
+  }
+
+  function delay(fn) { setTimeout(fn, 380); }
+
+  function pick(q, val, el) {
+    ans[q] = val;
+    document.querySelectorAll('#opts-' + q + ' .opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const btn = document.getElementById('nxt-' + q);
+    if (btn) btn.disabled = false;
+  }
+
+  function toggle(q, val, el) {
+    const arr = multi[q];
+    const i = arr.indexOf(val);
+    if (i === -1) { arr.push(val); el.classList.add('selected'); }
+    else { arr.splice(i, 1); el.classList.remove('selected'); }
+    const btn = document.getElementById('nxt-' + q);
+    if (btn) btn.disabled = arr.length === 0;
+  }
+
+  function finish(type, el) {
+    ans.q6 = type;
+    document.querySelectorAll('#s-q6 .opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    delay(() => { setProgress(100); show('result-' + type); });
+  }
+
+  function restart() {
+    Object.keys(ans).forEach(k => delete ans[k]);
+    multi.q2 = [];
+    document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('[id^="nxt-"]').forEach(b => b.disabled = true);
+    go('welcome');
+  }
+</script>
+</body>
+</html>
